@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Will</title>
+    
+    <script>
+      function checkPassword() {
+        var password = prompt("Please enter the secret password to enter:");
+        if (password !== "080406") { 
+          alert("Incorrect password! Try again.");
+          window.location.reload(); 
+        }
+      }
+      checkPassword();
+    </script>
+
+    <style>
+        body { 
+            text-align: center; 
+            background-color: #fff0f5; 
+            font-family: sans-serif; 
+            padding-top: 50px; 
+        }
+        h1 { color: #d02090; }
+        .heart { color: red; font-size: 100px; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 600px) {
+            body { 
+                padding-top: 20px; 
+            }
+            h1 { 
+                font-size: 24px; 
+                padding: 0 10px;
+            }
+            .heart { 
+                font-size: 60px; 
+            }
+            #game-container {
+                height: 250px !important; /* Slightly shorter for phone screens */
+                margin: 10px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart">❤️</div>
+    <h1>Happy Valentine's Day, Will!</h1>
+
+    <div id="game-container" style="height: 300px; border: 2px dashed #d02090; position: relative; overflow: hidden; background: white; margin: 20px;">
+        <p id="game-status">Catch the heart 5 times to see your message!</p>
+        <div id="target-heart" style="position: absolute; cursor: pointer; font-size: 30px; user-select: none;">❤️</div>
+    </div>
+
+    <script>
+        let score = 0;
+        const heart = document.getElementById('target-heart');
+        const status = document.getElementById('game-status');
+        const container = document.getElementById('game-container');
+
+        function moveHeart() {
+            // Updated to be more precise on small screens
+            const x = Math.random() * (container.offsetWidth - 40);
+            const y = Math.random() * (container.offsetHeight - 40);
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+        }
+
+        heart.addEventListener('click', () => {
+            score++;
+            if (score < 5) {
+                status.innerText = "Nice! " + (5 - score) + " more to go...";
+                moveHeart();
+            } else {
+                heart.style.display = 'none';
+                status.innerHTML = "<strong style='color: #d02090; font-size: 20px;'>You won! I love you! ❤️</strong>";
+            }
+        });
+
+        moveHeart(); 
+    </script>
+</body>
+</html>
