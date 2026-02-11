@@ -57,32 +57,51 @@
         <div id="target-heart" style="position: absolute; cursor: pointer; font-size: 30px; user-select: none;">❤️</div>
     </div>
 
-    <script>
-        let score = 0;
-        const heart = document.getElementById('target-heart');
-        const status = document.getElementById('game-status');
-        const container = document.getElementById('game-container');
+    <div id="sudoku-section" style="text-align: center; margin: 50px auto; max-width: 400px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f7; padding: 20px; border-radius: 20px; border: 2px dashed #ff4d6d;">
+    
+    <h2 style="color: #ff4d6d; margin-bottom: 10px;">🧩 Emoji-Doku</h2>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+        Fill the grid so every row and column has one of each:<br>
+        <strong>❤️ , 🌹 , 🎁 , 💌</strong>
+    </p>
 
-        function moveHeart() {
-            // Updated to be more precise on small screens
-            const x = Math.random() * (container.offsetWidth - 40);
-            const y = Math.random() * (container.offsetHeight - 40);
-            heart.style.left = x + 'px';
-            heart.style.top = y + 'px';
-        }
+    <table id="sudoku-grid" style="margin: 0 auto; border-collapse: collapse; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <tr>
+            <td class="cell"><input type="text" value="❤️" readonly></td>
+            <td class="cell"><input type="text" id="s1" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="🎁" readonly></td>
+            <td class="cell"><input type="text" id="s2" maxlength="2" placeholder="?"></td>
+        </tr>
+        <tr>
+            <td class="cell"><input type="text" id="s3" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="🌹" readonly></td>
+            <td class="cell"><input type="text" id="s4" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="❤️" readonly></td>
+        </tr>
+        <tr>
+            <td class="cell"><input type="text" value="🌹" readonly></td>
+            <td class="cell"><input type="text" id="s5" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="💌" readonly></td>
+            <td class="cell"><input type="text" id="s6" maxlength="2" placeholder="?"></td>
+        </tr>
+        <tr>
+            <td class="cell"><input type="text" id="s7" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="💌" readonly></td>
+            <td class="cell"><input type="text" id="s8" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="🌹" readonly></td>
+        </tr>
+    </table>
 
-        heart.addEventListener('click', () => {
-            score++;
-            if (score < 5) {
-                status.innerText = "Nice! " + (5 - score) + " more to go...";
-                moveHeart();
-            } else {
-                heart.style.display = 'none';
-                status.innerHTML = "<strong style='color: #d02090; font-size: 20px;'>You won! I love you! ❤️</strong>";
-            }
-        });
+    <button onclick="checkEmojiSudoku()" style="margin-top: 25px; padding: 12px 30px; background-color: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s;">
+        Check My Answers!
+    </button>
 
-        moveHeart(); 
-    </script>
+    <p id="sudoku-msg" style="margin-top: 20px; font-size: 18px; font-weight: bold; min-height: 24px;"></p>
+</div>
+
+<style>
+    .cell { border: 2px solid #ffdae9; width: 60px; height: 60px; padding: 0;
+
+
 </body>
 </html>
