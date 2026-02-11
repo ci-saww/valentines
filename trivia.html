@@ -60,19 +60,30 @@ body {
   padding: 0;
 }
 
+/* Find .box and replace it with this */
 .box {
   background: white;
-  border-radius: 15px; /* Made it rounder to match your theme */
+  border-radius: 15px;
   padding: 2em;
-  position: relative; /* Change to relative */
-  margin: 20px auto;  /* This centers it horizontally */
+  position: absolute; /* Keep this absolute for the game logic! */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 90%;
   max-width: 400px;
-  z-index: 1;
-  opacity: 1; /* Make sure it's visible */
+  z-index: 0;
+  opacity: 0;
+  transition: all 1s;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Add this new class to create a "wrapper" for the game */
+.game-viewport {
+  position: relative;
+  height: 450px; /* This reserves space so the game doesn't overlap other things */
+  width: 100%;
+  margin: 20px 0;
+}
 #welcome,
 .box:target {
   transform: translate(-50%, -50%);
