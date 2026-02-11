@@ -52,42 +52,44 @@
 	<br>
 	<p>Here is where I will write you a letter about how much I love you and how amazing you are!!</p>
 
+<-- below is the game -->
+
     <div id="sudoku-section" style="text-align: center; margin: 50px auto; max-width: 400px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f7; padding: 20px; border-radius: 20px; border: 2px dashed #ff4d6d;">
     
-    <h2 style="color: #ff4d6d; margin-bottom: 10px;">🧩 Emoji-Doku</h2>
+    <h2 style="color: #ff4d6d; margin-bottom: 10px;">🧩 LOVE-Doku</h2>
     <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
         Fill the grid so every row and column has one of each:<br>
-        <strong>❤️ , 🌹 , 🎁 , 💌</strong>
+        <strong>L, O, V, E</strong>
     </p>
 
     <table id="sudoku-grid" style="margin: 0 auto; border-collapse: collapse; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
         <tr>
-            <td class="cell"><input type="text" value="❤️" readonly></td>
-            <td class="cell"><input type="text" id="s1" maxlength="2" placeholder="?"></td>
-            <td class="cell"><input type="text" value="🎁" readonly></td>
-            <td class="cell"><input type="text" id="s2" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="L" readonly></td>
+            <td class="cell"><input type="text" id="s1" maxlength="1" placeholder="?"></td>
+            <td class="cell"><input type="text" value="V" readonly></td>
+            <td class="cell"><input type="text" id="s2" maxlength="1" placeholder="?"></td>
         </tr>
         <tr>
-            <td class="cell"><input type="text" id="s3" maxlength="2" placeholder="?"></td>
-            <td class="cell"><input type="text" value="🌹" readonly></td>
-            <td class="cell"><input type="text" id="s4" maxlength="2" placeholder="?"></td>
-            <td class="cell"><input type="text" value="❤️" readonly></td>
+            <td class="cell"><input type="text" id="s3" maxlength="1" placeholder="?"></td>
+            <td class="cell"><input type="text" value="O" readonly></td>
+            <td class="cell"><input type="text" id="s4" maxlength="1" placeholder="?"></td>
+            <td class="cell"><input type="text" value="L" readonly></td>
         </tr>
         <tr>
-            <td class="cell"><input type="text" value="🌹" readonly></td>
-            <td class="cell"><input type="text" id="s5" maxlength="2" placeholder="?"></td>
-            <td class="cell"><input type="text" value="💌" readonly></td>
-            <td class="cell"><input type="text" id="s6" maxlength="2" placeholder="?"></td>
+            <td class="cell"><input type="text" value="O" readonly></td>
+            <td class="cell"><input type="text" id="s5" maxlength="1" placeholder="?"></td>
+            <td class="cell"><input type="text" value="E" readonly></td>
+            <td class="cell"><input type="text" id="s6" maxlength="1" placeholder="?"></td>
         </tr>
         <tr>
-            <td class="cell"><input type="text" id="s7" maxlength="2" placeholder="?"></td>
-            <td class="cell"><input type="text" value="💌" readonly></td>
-            <td class="cell"><input type="text" id="s8" maxlength="2" placeholder="?"></td>
-            <td class="cell"><input type="text" value="🌹" readonly></td>
+            <td class="cell"><input type="text" id="s7" maxlength="1" placeholder="?"></td>
+            <td class="cell"><input type="text" value="E" readonly></td>
+            <td class="cell"><input type="text" id="s8" maxlength="1" placeholder="?"></td>
+            <td class="cell"><input type="text" value="O" readonly></td>
         </tr>
     </table>
 
-    <button onclick="checkEmojiSudoku()" style="margin-top: 25px; padding: 12px 30px; background-color: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s;">
+    <button onclick="checkLoveSudoku()" style="margin-top: 25px; padding: 12px 30px; background-color: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s;">
         Check My Answers!
     </button>
 
@@ -95,8 +97,54 @@
 </div>
 
 <style>
-    .cell { border: 2px solid #ffdae9; width: 60px; height: 60px; padding: 0;
+    .cell { border: 2px solid #ffdae9; width: 60px; height: 60px; padding: 0; }
+    #sudoku-grid input {
+        width: 100%; height: 100%; text-align: center; font-size: 24px; 
+        border: none; outline: none; background: transparent; cursor: pointer;
+        text-transform: uppercase; /* Ensures input looks consistent */
+    }
+    #sudoku-grid input[readonly] { background-color: #fff0f5; color: #333; cursor: default; }
+    #sudoku-grid input:focus { background-color: #fff9fa; }
+    button:hover { background-color: #ff758f; transform: scale(1.05); }
+</style>
 
+<script>
+    function checkLoveSudoku() {
+        /**
+         * Logic Map (Solvable 4x4):
+         * L O V E
+         * V O E L (Modified your original to ensure uniqueness)
+         * O L E V
+         * E E L O
+         */
+        const solution = {
+            s1: "O", s2: "E", 
+            s3: "V", s4: "E", 
+            s5: "L", s6: "V", 
+            s7: "V", s8: "L"
+        };
+        
+        let isCorrect = true;
+        let msg = document.getElementById("sudoku-msg");
+
+        for (let key in solution) {
+            let userVal = document.getElementById(key).value.trim().toUpperCase();
+            if (userVal !== solution[key]) {
+                isCorrect = false;
+            }
+        }
+
+        if (isCorrect) {
+            msg.style.color = "#2ecc71";
+            msg.innerHTML = "🎉 Correct! You really are the smartest. ❤️";
+        } else {
+            msg.style.color = "#ff4d6d";
+            msg.innerHTML = "Not quite yet! Keep trying, baby. 😘";
+        }
+    }
+</script>
+
+<-- above is the game -->
 
 </body>
 </html>
