@@ -20,17 +20,32 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        /* The Toggle Hack */
+        /* The "Brain" of the operation stays hidden at the top */
         #checker { display: none; }
+
+        /* The Stylish Button at the bottom */
         .check-label {
             display: inline-block;
-            margin: 10px;
-            padding: 10px 20px;
+            margin: 20px 10px;
+            padding: 12px 30px;
             background: #336699;
             color: white;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(51, 102, 153, 0.3);
+        }
+
+        .check-label:hover {
+            background: #2a5582;
+            transform: translateY(-2px);
+        }
+
+        /* Change button text/color when active */
+        #checker:checked ~ .check-label {
+            background: #d02090;
+            content: "Hide Hints";
         }
 
         .grid {
@@ -61,10 +76,8 @@
             outline: none; background: transparent;
         }
 
-        /* --- THE CHECK ANSWERS LOGIC --- */
-        /* If the checkbox is checked, we test the values of specific inputs */
-        
-        /* Correct letters turn green */
+        /* --- VALIDATION LOGIC --- */
+        /* If checked, turn correct letters green. Case-insensitive [value="X" i] */
         #checker:checked ~ .crossword-container .grid input[value="A" i],
         #checker:checked ~ .crossword-container .grid input[value="M" i],
         #checker:checked ~ .crossword-container .grid input[value="T" i],
@@ -79,35 +92,34 @@
         #checker:checked ~ .crossword-container .grid input[value="C" i],
         #checker:checked ~ .crossword-container .grid input[value="Y" i],
         #checker:checked ~ .crossword-container .grid input[value="N" i] {
-            background-color: #d4edda; /* Light Green */
+            background-color: #d4edda;
         }
 
-        /* Incorrect or empty letters turn light red */
+        /* Incorrect or empty letters turn light red when checked */
         #checker:checked ~ .crossword-container .grid input {
-            background-color: #f8d7da; /* Light Red default when checked */
+            background-color: #f8d7da;
         }
 
         .number { position: absolute; top: 2px; left: 3px; font-size: 10px; color: #d02090; font-weight: bold; }
         .clues-section { display: flex; text-align: left; margin-top: 20px; gap: 20px; border-top: 1px solid #eee; padding-top: 10px;}
-        .back-btn { margin-top: 30px; display: inline-block; padding: 12px 25px; background: #ff4d6d; color: white; text-decoration: none; border-radius: 50px; font-weight: bold; }
+        .back-btn { margin-top: 10px; display: block; color: #ff4d6d; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>A Grandiloquent Challenge ❤️</h1>
-
     <input type="checkbox" id="checker">
-    <label for="checker" class="check-label">Toggle Check Answers</label>
+
+    <h1>A Grandiloquent Challenge ❤️</h1>
 
     <div class="crossword-container">
         <div class="grid">
-            <div class="cell"><span class="number">1</span><input type="text" maxlength="1" value=""></div>
-            <div class="cell"><input type="text" maxlength="1" value=""></div>
-            <div class="cell"><input type="text" maxlength="1" value=""></div>
-            <div class="cell"><input type="text" maxlength="1" value=""></div>
-            <div class="cell"><input type="text" maxlength="1" value=""></div>
-            <div class="cell"><input type="text" maxlength="1" value=""></div>
-            <div class="cell"><input type="text" maxlength="1" value=""></div>
+            <div class="cell"><span class="number">1</span><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
 
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
             <div class="cell"><span class="number">2</span><input type="text" maxlength="1"></div>
@@ -159,7 +171,31 @@
     </div>
 
     <br>
-    <a href="index.html" class="back-btn">🏠 Back to Arcade</a>
+    
+    <label for="checker" class="check-label">Check Answers</label>
+
+    <br>
+    
+<div style="text-align: center; margin: 40px auto 20px auto;">
+    <a href="index.html" style="text-decoration: none;">
+        <button style="
+            padding: 12px 25px; 
+            background-color: #ff4d6d; 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        " onmouseover="this.style.backgroundColor='#ff758f'; this.style.transform='scale(1.05)';" 
+           onmouseout="this.style.backgroundColor='#ff4d6d'; this.style.transform='scale(1)';"
+        >
+            🏠 Back to Arcade
+        </button>
+    </a>
+</div>
 
 </body>
 </html>
