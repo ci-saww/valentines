@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Stack Arcade - Level Up</title>
+    <style>
+        body { background-color: #cdebf9; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
+        
+        .score-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .level-box {
+            background: white;
+            padding: 10px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid #336699;
+        }
+
+        .level-label { font-size: 12px; color: #666; text-transform: uppercase; display: block; }
+        .level-value { font-size: 24px; font-weight: bold; color: #336699; }
+
+        .game-container {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            min-width: 400px;
+        }
+
+        .tubes-row { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            margin: 30px 0; 
+            flex-wrap: wrap; 
+            max-width: 600px;
+        }
+        
+        .tube {
+            width: 50px;
+            height: 180px;
+            border: 4px solid #4a6fa5;
+            border-top: none;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            padding-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tube.selected { 
+            transform: translateY(-20px); 
+            border-color: #d02090; 
+            box-shadow: 0 10px 15px rgba(208, 32, 144, 0.2);
+        }
+
+        .ball {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-bottom: 4px;
+            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            padding: 12px 35px;
+            background: #336699;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        #next-level-btn { display: none; background: #28a745; }
+        #victory-msg { display: none; color: #d02090; font-weight: bold; margin: 15px 0; }
+
+        .back-btn { display: inline-block; margin-top: 25px; color: #ef6a7c; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Ball Stack Sort 🧪</h1>
+    
+    <div class="score-container">
+        <div class="level-box">
+            <span class="level-label">Current Level</span>
+            <span id="level-display" class="level-value">1</span>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="tubes-row" id="tubes-container"></div>
+        
+        <div id="victory-msg">✨ Level Complete! ✨</div>
+        
+        <button id="next-level-btn" class="btn" onclick="nextLevel()">Next Level ➔</button>
+        <button class="btn" onclick="initGame()">Restart Level</button>
+    </div>
+
+    <br>
+    <a href="index.html" class="back-btn">🏠 Back to Arcade</a>
+
+    <script>
+        const container = document.getElementById('tubes-container');
+        const victoryMsg = document.getElementById('victory-msg');
+        const nextBtn = document.getElementById('next-level-btn');
+        const levelDisplay = document.getElementById('level-display');
+
+        // Color palette expands as level increases
+        const ALL_COLORS = ['#FF4D6D', '#336699', '#FFD166', '#06D6A0', '#118AB2', '#073B4C', '#7209B7', '#4CC9F0'];
+        
+        let currentLevel = parseInt(localStorage.getItem('ballSortLevel')) || 1;
+        let tubes = [];
+        let selectedTubeIndex = null;
+        let colorCount = 0;
+
+        function initGame() {
+            victoryMsg.style.display = 'none';
+            nextBtn.style.display = 'none';
+            selectedTubeIndex = null;
+            levelDisplay.innerText = currentLevel;
+
+            // Difficulty: starts with 3 colors, increases every 2 levels
+            colorCount = Math.min(3 + Math.floor((currentLevel - 1) / 2), ALL_COLORS.length);
+            const activeColors = ALL_COLORS.slice(0, colorCount);
+            
+            const allBalls = [];
+            activeColors.forEach(color => {
+                for(let i=0; i<4; i++) allBalls.push(color);
+            });
+
+            // Shuffle
+            for (let i = allBalls.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
+            }
+
+            tubes = [];
+            for (let i = 0; i < colorCount; i++) {
+                tubes.push(allBalls.slice(i * 4, (i + 1) * 4));
+            }
+            tubes.push([]); // Always 2 empty tubes
+            tubes.push([]); 
+
+            render();
+        }
+
+        function render() {
+            container.innerHTML = '';
+            tubes.forEach((tubeBalls, index) => {
+                const tubeDiv = document.createElement('div');
+                tubeDiv.className = `tube ${selectedTubeIndex === index ? 'selected' : ''}`;
+                tubeDiv.onclick = () => handleTubeClick(index);
+
+                tubeBalls.forEach(color => {
+                    const ballDiv = document.createElement('div');
+                    ballDiv.className = 'ball';
+                    ballDiv.style.backgroundColor = color;
+                    tubeDiv.appendChild(ballDiv);
+                });
+                container.appendChild(tubeDiv);
+            });
+        }
+
+        function handleTubeClick(index) {
+            if (selectedTubeIndex === null) {
+                if (tubes[index].length > 0) selectedTubeIndex = index;
+            } else {
+                if (selectedTubeIndex === index) {
+                    selectedTubeIndex = null;
+                } else {
+                    moveBall(selectedTubeIndex, index);
+                    selectedTubeIndex = null;
+                }
+            }
+            render();
+            checkWin();
+        }
+
+        function moveBall(fromIdx, toIdx) {
+            const fromTube = tubes[fromIdx];
+            const toTube = tubes[toIdx];
+            if (toTube.length >= 4) return;
+
+            const ballToMove = fromTube[fromTube.length - 1];
+            if (toTube.length === 0 || toTube[toTube.length - 1] === ballToMove) {
+                toTube.push(fromTube.pop());
+            }
+        }
+
+        function checkWin() {
+            const isWin = tubes.every(tube => {
+                if (tube.length === 0) return true;
+                return tube.length === 4 && tube.every(ball => ball === tube[0]);
+            });
+
+            if (isWin) {
+                victoryMsg.style.display = 'block';
+                nextBtn.style.display = 'inline-block';
+            }
+        }
+
+        function nextLevel() {
+            currentLevel++;
+            localStorage.setItem('ballSortLevel', currentLevel);
+            initGame();
+        }
+
+        initGame();
+    </script>
+
+
+
+<div style="text-align: center; margin: 40px auto 20px auto;">
+    <a href="index.html" style="text-decoration: none;">
+        <button style="
+            padding: 12px 25px; 
+            background-color: #ff4d6d; 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        " onmouseover="this.style.backgroundColor='#ff758f'; this.style.transform='scale(1.05)';" 
+           onmouseout="this.style.backgroundColor='#ff4d6d'; this.style.transform='scale(1)';"
+        >
+            🏠 Back to Arcade
+        </button>
+    </a>
+</div>
+
+
+
+</body>
+</html>
