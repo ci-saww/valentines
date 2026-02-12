@@ -184,16 +184,17 @@ label:nth-child(5)::before {
 }
 
 .box > a {
-  display: block;          /* Allows the button to use margins for centering */
-  margin: 1em auto 0 auto; /* Centers horizontally (auto) with 1em on top */
-  width: fit-content;      /* Ensures the box only as wide as the text inside */
+  display: block;          /* Changes it from a link to a block */
+  margin: 20px auto 0 auto; /* Centers it horizontally */
+  width: fit-content;      /* Makes the button only as wide as the text */
+  padding: 12px 24px;
   text-align: center;
   text-decoration: none;
   background: linear-gradient(#33dd66, #00aa33);
-  border: 1px solid #00aa33;
+  border-radius: 8px;      /* Makes it slightly rounded and cute */
   color: #ffffff;
+  font-weight: bold;
   cursor: pointer;
-  padding: 10px 20px;      /* Adds some nice space inside the button */
 }
 
 .box > a:hover {
