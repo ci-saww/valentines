@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Crossword</title>
+    <style>
+        body {
+            background-color: #cdebf9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .crossword-container {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 90%;
+        }
+
+        /* The Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 40px);
+            grid-template-rows: repeat(5, 40px);
+            gap: 2px;
+            background-color: #333;
+            border: 2px solid #333;
+            margin: 20px auto;
+        }
+
+        .cell {
+            background: white;
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .cell.black {
+            background: #333;
+        }
+
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            outline: none;
+        }
+
+        /* Numbering */
+        .number {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* Logic: Green background when correct */
+        /* Row 1: HEART (H-E-A-R-T) */
+        #c00[value="H" i], #c00[value="h" i] { background: #c8e6c9; }
+        
+        /* Clues styling */
+        .clues {
+            text-align: left;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        h2 { color: #d02090; }
+        h3 { margin-bottom: 5px; color: #ff4d6d; }
+        ul { list-style: none; padding: 0; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <h1>Valentine Crossword ❤️</h1>
+
+    <div class="crossword-container">
+        <div class="grid">
+            <div class="cell"><span class="number">1</span><input type="text" maxlength="1" id="c00"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><span class="number">2</span><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+
+            <div class="cell black"></div>
+            <div class="cell black"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell black"></div>
+            <div class="cell black"></div>
+
+            <div class="cell"><span class="number">3</span><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell black"></div>
+
+            <div class="cell black"></div>
+            <div class="cell black"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell black"></div>
+            <div class="cell black"></div>
+
+            <div class="cell"><span class="number">4</span><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1"></div>
+        </div>
+
+        <div class="clues">
+            <div>
+                <h3>Across</h3>
+                <ul>
+                    <li>1. Symbol of love (5)</li>
+                    <li>3. "Be _____" (4)</li>
+                    <li>4. Sugar is _____ (5)</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Down</h3>
+                <ul>
+                    <li>2. Sweet treat (5)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="index.html" style="text-decoration: none;">
+            <button style="padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 20px; cursor: pointer;">🏠 Back to Arcade</button>
+        </a>
+    </div>
+
+</body>
+</html>
