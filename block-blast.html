@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Blast Arcade</title>
+    <style>
+        body { background-color: #cdebf9; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
+        
+        .score-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 15px;
+        }
+
+        .score-box {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .score-label { font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+        .score-value { font-size: 28px; font-weight: bold; color: #336699; display: block; }
+
+        .game-wrapper {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            grid-template-rows: repeat(8, 40px);
+            gap: 2px;
+            background: #333;
+            padding: 8px;
+            border-radius: 12px;
+            margin: 10px auto;
+        }
+
+        .cell { width: 40px; height: 40px; background: #555; border-radius: 4px; }
+        .cell.filled { background: #4a6fa5; border: 1px solid #ffffff33; }
+
+        #game-over {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #piece-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+            min-height: 120px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 10px;
+        }
+
+        .piece { cursor: grab; display: grid; gap: 2px; transition: transform 0.2s; }
+        .piece:active { transform: scale(1.1); }
+        .p-block { width: 22px; height: 22px; background: #d02090; border-radius: 3px; }
+
+        .btn {
+            padding: 15px 40px;
+            background: #336699;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: #d02090; transform: translateY(-3px); }
+
+        .back-btn { 
+            display: inline-block; 
+            margin-top: 25px; 
+            padding: 12px 30px; 
+            background: #ef6a7c; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Block Blast 💥</h1>
+    
+    <div class="score-container">
+        <div class="score-box">
+            <span class="score-label">Score</span>
+            <span id="score" class="score-value">0</span>
+        </div>
+        <div class="score-box">
+            <span class="score-label">Best</span>
+            <span id="high-score" class="score-value">0</span>
+        </div>
+    </div>
+
+    <div class="game-wrapper">
+        <div id="game-over">
+            <h2 style="color: #d02090; font-size: 32px;">Game Over!</h2>
+            <p id="final-score-msg" style="font-weight: bold; font-size: 20px;"></p>
+            <button class="btn" onclick="resetGame()">Play Again</button>
+        </div>
+
+        <div id="board"></div>
+        <div id="piece-container"></div>
+    </div>
+
+    <br>
+    <a href="index.html" class="back-btn">🏠 Back to Arcade</a>
+
+    <script>
+        const boardElement = document.getElementById('board');
+        const pieceContainer = document.getElementById('piece-container');
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('high-score');
+        const gameOverScreen = document.getElementById('game-over');
+        
+        let score = 0;
+        let highScore = localStorage.getItem('blockBlastHighScore') || 0;
+        highScoreElement.innerText = highScore;
+
+        let board = Array(8).fill().map(() => Array(8).fill(0));
+        let currentShapes = [];
+
+        const shapes = [
+            { data: [[1, 1], [1, 1]] }, // Square
+            { data: [[1, 1, 1]] },      // Horizontal 3
+            { data: [[1], [1], [1]] },   // Vertical 3
+            { data: [[1, 1], [1, 0]] }, // L
+            { data: [[1, 1, 1, 1]] },   // Long Line
+            { data: [[1]] }             // Single Dot
+        ];
+
+        function initBoard() {
+            boardElement.innerHTML = '';
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell' + (board[r][c] ? ' filled' : '');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        function spawnPieces() {
+            pieceContainer.innerHTML = '';
+            currentShapes = [];
+            for (let i = 0; i < 3; i++) {
+                const shapeObj = shapes[Math.floor(Math.random() * shapes.length)];
+                currentShapes.push(shapeObj.data);
+                
+                const piece = document.createElement('div');
+                piece.className = 'piece';
+                piece.draggable = true;
+                piece.dataset.index = i;
+                piece.style.gridTemplateColumns = `repeat(${shapeObj.data[0].length}, 22px)`;
+                
+                shapeObj.data.forEach(row => {
+                    row.forEach(cell => {
+                        const b = document.createElement('div');
+                        if (cell) b.className = 'p-block';
+                        piece.appendChild(b);
+                    });
+                });
+
+                piece.addEventListener('dragstart', (e) => e.dataTransfer.setData('pieceIndex', i));
+                pieceContainer.appendChild(piece);
+            }
+        }
+
+        boardElement.addEventListener('dragover', e => e.preventDefault());
+
+        boardElement.addEventListener('drop', e => {
+            const r = parseInt(e.target.dataset.row);
+            const c = parseInt(e.target.dataset.col);
+            const pieceIndex = e.dataTransfer.getData('pieceIndex');
+            const shape = currentShapes[pieceIndex];
+
+            if (shape && canPlace(r, c, shape)) {
+                placePiece(r, c, shape);
+                document.querySelector(`[data-index="${pieceIndex}"]`).style.visibility = 'hidden';
+                currentShapes[pieceIndex] = null;
+                checkLines();
+                initBoard();
+
+                if (currentShapes.every(s => s === null)) spawnPieces();
+                if (!anyMovePossible()) showGameOver();
+            }
+        });
+
+        function canPlace(r, c, shape) {
+            for (let i = 0; i < shape.length; i++) {
+                for (let j = 0; j < shape[i].length; j++) {
+                    if (shape[i][j]) {
+                        if (r + i >= 8 || c + j >= 8 || board[r + i][c + j]) return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function placePiece(r, c, shape) {
+            for (let i = 0; i < shape.length; i++) {
+                for (let j = 0; j < shape[i].length; j++) {
+                    if (shape[i][j]) board[r + i][c + j] = 1;
+                }
+            }
+            addScore(10);
+        }
+
+        function addScore(points) {
+            score += points;
+            scoreElement.innerText = score;
+            if (score > highScore) {
+                highScore = score;
+                highScoreElement.innerText = highScore;
+                localStorage.setItem('blockBlastHighScore', highScore);
+            }
+        }
+
+        function checkLines() {
+            let rows = [], cols = [];
+            for (let r = 0; r < 8; r++) if (board[r].every(v => v === 1)) rows.push(r);
+            for (let c = 0; c < 8; c++) if (board.every(row => row[c] === 1)) cols.push(c);
+
+            rows.forEach(r => board[r] = Array(8).fill(0));
+            cols.forEach(c => board.forEach(row => row[c] = 0));
+
+            if (rows.length || cols.length) addScore((rows.length + cols.length) * 100);
+        }
+
+        function anyMovePossible() {
+            return currentShapes.some(shape => {
+                if (!shape) return false;
+                for (let r = 0; r < 8; r++) 
+                    for (let c = 0; c < 8; c++) 
+                        if (canPlace(r, c, shape)) return true;
+                return false;
+            });
+        }
+
+        function showGameOver() {
+            document.getElementById('final-score-msg').innerText = `Final Score: ${score}`;
+            gameOverScreen.style.display = 'flex';
+        }
+
+        function resetGame() {
+            score = 0;
+            scoreElement.innerText = "0";
+            board = Array(8).fill().map(() => Array(8).fill(0));
+            gameOverScreen.style.display = 'none';
+            initBoard();
+            spawnPieces();
+        }
+
+        initBoard();
+        spawnPieces();
+    </script>
+
+
+<div style="text-align: center; margin: 40px auto 20px auto;">
+    <a href="index.html" style="text-decoration: none;">
+        <button style="
+            padding: 12px 25px; 
+            background-color: #ff4d6d; 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        " onmouseover="this.style.backgroundColor='#ff758f'; this.style.transform='scale(1.05)';" 
+           onmouseout="this.style.backgroundColor='#ff4d6d'; this.style.transform='scale(1)';"
+        >
+            🏠 Back to Arcade
+        </button>
+    </a>
+</div>
+
+
+</body>
+</html>
