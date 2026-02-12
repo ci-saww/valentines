@@ -184,14 +184,16 @@ label:nth-child(5)::before {
 }
 
 .box > a {
-  float: left; /*CHANGE HERE !!!!!!*/
-  margin-top: 1em;
+  display: block;          /* Allows the button to use margins for centering */
+  margin: 1em auto 0 auto; /* Centers horizontally (auto) with 1em on top */
+  width: fit-content;      /* Ensures the box only as wide as the text inside */
   text-align: center;
   text-decoration: none;
   background: linear-gradient(#33dd66, #00aa33);
   border: 1px solid #00aa33;
   color: #ffffff;
   cursor: pointer;
+  padding: 10px 20px;      /* Adds some nice space inside the button */
 }
 
 .box > a:hover {
