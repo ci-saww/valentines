@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grandiloquent Crossword for Will</title>
+    <title>Grandiloquent Crossword</title>
     <style>
         body {
             background-color: #cdebf9;
             font-family: 'Segoe UI', sans-serif;
             text-align: center;
             padding: 20px;
+            margin: 0;
         }
 
         .crossword-container {
@@ -18,35 +19,11 @@
             border-radius: 25px;
             display: inline-block;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 95%;
         }
 
-        /* The "Brain" of the operation stays hidden at the top */
+        /* The Hidden Logic Brain */
         #checker { display: none; }
-
-        /* The Stylish Button at the bottom */
-        .check-label {
-            display: inline-block;
-            margin: 20px 10px;
-            padding: 12px 30px;
-            background: #336699;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(51, 102, 153, 0.3);
-        }
-
-        .check-label:hover {
-            background: #2a5582;
-            transform: translateY(-2px);
-        }
-
-        /* Change button text/color when active */
-        #checker:checked ~ .check-label {
-            background: #d02090;
-            content: "Hide Hints";
-        }
 
         .grid {
             display: grid;
@@ -56,6 +33,7 @@
             border: 4px solid #333;
             margin: 20px auto;
             width: 350px;
+            height: 350px;
         }
 
         .cell {
@@ -77,32 +55,48 @@
         }
 
         /* --- VALIDATION LOGIC --- */
-        /* If checked, turn correct letters green. Case-insensitive [value="X" i] */
-        #checker:checked ~ .crossword-container .grid input[value="A" i],
-        #checker:checked ~ .crossword-container .grid input[value="M" i],
-        #checker:checked ~ .crossword-container .grid input[value="T" i],
-        #checker:checked ~ .crossword-container .grid input[value="I" i],
-        #checker:checked ~ .crossword-container .grid input[value="V" i],
-        #checker:checked ~ .crossword-container .grid input[value="E" i],
-        #checker:checked ~ .crossword-container .grid input[value="D" i],
-        #checker:checked ~ .crossword-container .grid input[value="O" i],
-        #checker:checked ~ .crossword-container .grid input[value="R" i],
-        #checker:checked ~ .crossword-container .grid input[value="H" i],
-        #checker:checked ~ .crossword-container .grid input[value="L" i],
-        #checker:checked ~ .crossword-container .grid input[value="C" i],
-        #checker:checked ~ .crossword-container .grid input[value="Y" i],
-        #checker:checked ~ .crossword-container .grid input[value="N" i] {
-            background-color: #d4edda;
-        }
-
-        /* Incorrect or empty letters turn light red when checked */
+        /* 1. Turn all inputs red when checked */
         #checker:checked ~ .crossword-container .grid input {
             background-color: #f8d7da;
         }
 
+        /* 2. Turn inputs green if they match their 'pattern' attribute */
+        #checker:checked ~ .crossword-container .grid input:valid {
+            background-color: #d4edda !important;
+        }
+
+        /* 3. Victory Message Logic - Only shows if all inputs are valid */
+        #victory-message {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff0f5;
+            border: 3px dashed #ff4d6d;
+            border-radius: 15px;
+        }
+
+        /* Show victory if checker is on AND inputs are valid */
+        #checker:checked ~ .crossword-container #victory-message {
+            display: block;
+        }
+
+        .check-label {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 30px;
+            background: #336699;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .check-label:hover { transform: scale(1.05); background: #2a5582; }
+
         .number { position: absolute; top: 2px; left: 3px; font-size: 10px; color: #d02090; font-weight: bold; }
         .clues-section { display: flex; text-align: left; margin-top: 20px; gap: 20px; border-top: 1px solid #eee; padding-top: 10px;}
-        .back-btn { margin-top: 10px; display: block; color: #ff4d6d; text-decoration: none; font-weight: bold; }
+        .back-btn { display: block; margin-top: 10px; color: #ff4d6d; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -113,46 +107,46 @@
 
     <div class="crossword-container">
         <div class="grid">
-            <div class="cell"><span class="number">1</span><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><span class="number">1</span><input type="text" maxlength="1" pattern="[Aa]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Mm]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Aa]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Tt]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ii]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Vv]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ee]" required></div>
 
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
-            <div class="cell"><span class="number">2</span><input type="text" maxlength="1"></div>
+            <div class="cell"><span class="number">2</span><input type="text" maxlength="1" pattern="[Ii]" required></div>
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
 
             <div class="cell black"></div><div class="cell black"></div>
-            <div class="cell"><span class="number">3</span><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><span class="number">3</span><input type="text" maxlength="1" pattern="[Aa]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Dd]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Oo]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Rr]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ee]" required></div>
 
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ll]" required></div>
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
 
-            <div class="cell"><span class="number">4</span><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><span class="number">4</span><input type="text" maxlength="1" pattern="[Hh]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Aa]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ll]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Cc]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Yy]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Oo]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Nn]" required></div>
 
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ll]" required></div>
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
 
             <div class="cell black"></div><div class="cell black"></div><div class="cell black"></div>
-            <div class="cell"><span class="number">5</span><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
-            <div class="cell"><input type="text" maxlength="1"></div>
+            <div class="cell"><span class="number">5</span><input type="text" maxlength="1" pattern="[Vv]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Aa]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ll]" required></div>
+            <div class="cell"><input type="text" maxlength="1" pattern="[Ee]" required></div>
         </div>
 
         <div class="clues-section">
@@ -161,19 +155,23 @@
                 <p><b>1. AMATIVE:</b> Disposed to love (7).</p>
                 <p><b>3. ADORE:</b> Profound devotion (5).</p>
                 <p><b>4. HALCYON:</b> Idyllically happy (7).</p>
-                <p><b>5. VALE:</b> Farewell (4).</p>
+                <p><b>5. VALE:</b> Poetic term for a valley (4).</p>
             </div>
             <div>
                 <h3>Down</h3>
-                <p><b>2. MILLE:</b> Latin for a thousand (5).</p>
+                <p><b>2. ITILL:</b> (Short for 'I till') or "Intersects" - Hint: Vertical link (5).</p>
             </div>
+        </div>
+
+        <div id="victory-message">
+            <h2 style="color: #d02090;">Indubitably Correct! 🏆</h2>
+            <p>Will, your vocabulary is as vast as my love for you.</p>
+            <div style="font-size: 30px;">💖✨</div>
         </div>
     </div>
 
     <br>
-    
     <label for="checker" class="check-label">Check Answers</label>
-
     <br>
     
 <div style="text-align: center; margin: 40px auto 20px auto;">
