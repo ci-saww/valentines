@@ -22,15 +22,12 @@
             max-width: 95%;
         }
 
-        /* Hidden Logic Brains */
         #checker, #revealer { display: none; }
 
-        /* Perfect 7x7 Grid */
         .grid {
             display: grid;
             grid-template-columns: repeat(7, 50px);
             grid-template-rows: repeat(7, 50px);
-            gap: 0;
             background-color: #333;
             border: 4px solid #333;
             margin: 25px auto;
@@ -56,24 +53,29 @@
             outline: none; background: transparent;
         }
 
-        /* --- VALIDATION & REVEAL LOGIC --- */
+        /* --- THE HIDE/SHOW LOGIC --- */
         
-        /* 1. Check Answers Logic */
-        #checker:checked ~ .crossword-container .grid input {
-            background-color: #f8d7da; /* Red by default */
-        }
-        #checker:checked ~ .crossword-container .grid input:valid {
-            background-color: #d4edda !important; /* Green if correct */
+        /* Hide hints by default */
+        .cell input::placeholder {
+            color: transparent;
+            opacity: 0;
         }
 
-        /* 2. Reveal Answers Logic */
-        /* This shows the 'placeholder' which we will set to the correct letter */
+        /* Show hints ONLY when active */
         #revealer:checked ~ .crossword-container .grid input::placeholder {
             color: #d02090;
             opacity: 1;
         }
 
-        /* 3. Victory Message Logic */
+        /* Check Answers feedback */
+        #checker:checked ~ .crossword-container .grid input {
+            background-color: #f8d7da;
+        }
+        #checker:checked ~ .crossword-container .grid input:valid {
+            background-color: #d4edda !important;
+        }
+
+        /* Victory message logic */
         #victory-message {
             display: none;
             margin-top: 20px;
@@ -86,45 +88,42 @@
             display: block;
         }
 
-        /* Button Container Styling */
+        /* --- STYLING BUTTONS --- */
         .button-row {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 20px;
+            margin-top: 30px;
         }
 
         .btn-label {
-            padding: 12px 25px;
+            padding: 18px 40px;
+            background: #336699; /* Unified Blue */
             color: white;
-            border-radius: 50px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
-            font-size: 14px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            min-width: 180px;
+            box-shadow: 0 4px 15px rgba(51, 102, 153, 0.3);
         }
 
-        .check-btn { background: #336699; }
-        .reveal-btn { background: #6c757d; }
-        
-        .check-btn:hover { background: #2a5582; transform: scale(1.05); }
-        .reveal-btn:hover { background: #5a6268; transform: scale(1.05); }
-
-        /* Toggle visual states */
-        #checker:checked ~ .button-row .check-btn { background: #28a745; }
-        #revealer:checked ~ .button-row .reveal-btn { background: #d02090; }
+        /* Active State Visuals */
+        #checker:checked ~ .button-row label[for="checker"],
+        #revealer:checked ~ .button-row label[for="revealer"] {
+            background: #d02090; /* Flips to pink when active */
+        }
 
         .number { position: absolute; top: 2px; left: 3px; font-size: 10px; color: #d02090; font-weight: bold; }
         .clues-section { display: flex; text-align: left; margin-top: 20px; gap: 20px; border-top: 1px solid #eee; padding-top: 10px;}
-        .back-btn { display: block; margin-top: 15px; color: #ff4d6d; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .back-btn { display: block; margin-top: 25px; color: #ff4d6d; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <input type="checkbox" id="checker">
     <input type="checkbox" id="revealer">
-
-    <h1>A Grandiloquent Challenge ❤️</h1>
 
     <div class="crossword-container">
         <div class="grid">
@@ -170,33 +169,37 @@
             <div class="cell"><input type="text" maxlength="1" pattern="[Ee]" placeholder="E" required></div>
         </div>
 
-        <div class="clues-section">
-            <div style="max-width: 250px;">
-                <h3>Across</h3>
-                <p><b>1. AMATIVE:</b> Disposed to love (7).</p>
-                <p><b>3. ADORE:</b> Profound devotion (5).</p>
-                <p><b>4. HALCYON:</b> Idyllically happy (7).</p>
-                <p><b>5. VALE:</b> Poetic term for a valley (4).</p>
-            </div>
-            <div>
-                <h3>Down</h3>
-                <p><b>2. MILLE:</b> Latin for a thousand (5).</p>
-            </div>
-        </div>
-
         <div id="victory-message">
             <h2 style="color: #d02090;">Indubitably Correct! 🏆</h2>
             <p>Will, your vocabulary is as vast as my love for you.</p>
-            <div style="font-size: 30px;">💖✨</div>
         </div>
     </div>
 
     <div class="button-row">
-        <label for="checker" class="btn-label check-btn">Check Answers</label>
-        <label for="revealer" class="btn-label reveal-btn">Reveal Hints</label>
+        <label for="checker" class="btn-label">Check Answers</label>
+        <label for="revealer" class="btn-label">Reveal Hints</label>
     </div>
 
-    <a href="index.html" class="back-btn">🏠 Back to Arcade</a>
+    <div style="text-align: center; margin: 40px auto 20px auto;">
+    <a href="index.html" style="text-decoration: none;">
+        <button style="
+            padding: 12px 25px; 
+            background-color: #ff4d6d; 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        " onmouseover="this.style.backgroundColor='#ff758f'; this.style.transform='scale(1.05)';" 
+           onmouseout="this.style.backgroundColor='#ff4d6d'; this.style.transform='scale(1)';"
+        >
+            🏠 Back to Arcade
+        </button>
+    </a>
+</div>
 
 </body>
 </html>
